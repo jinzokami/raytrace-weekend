@@ -5,40 +5,8 @@
 #include <cstdio>
 
 #include "vec3.hpp"
+#include "image.hpp"
 
-struct Pixel {
-    int r, g, b, d;
-};
-
-struct Image {
-    Image (int width, int height) : width(width), height(height) 
-    {
-        std::vector<Pixel> pixels = std::vector<Pixel>();
-        pixels.reserve(width*height);
-    }
-    int width, height;
-    std::vector<Pixel> pixels;
-
-    void to_ppm(std::string filename)
-    {
-        std::string ppm_str;
-        char nl[128];
-        sprintf(nl, "%d %d\n\0", this->width, this->height);
-        ppm_str = "P3\n";
-        ppm_str.append(nl);
-
-        for (int pixel = 0; pixel < this->pixels.size(); pixel++)
-        {
-            sprintf(nl, "%d %d %d\n\0", this->pixels[pixel].r, this->pixels[pixel].g, this->pixels[pixel].b);
-            ppm_str.append(nl);
-        }
-
-        FILE* file;
-        fopen_s(&file, filename.c_str(), "w");
-        fputs(ppm_str.c_str(), file);
-        fclose(file);
-    }
-};
 //type: can be 0(sphere), 1(box), 2(plane)
 //pos: coords in 3d
 //arg: arg.x is radius(sphere) or width(box), arg.y is height(box), arg.z is depth(box)
@@ -61,32 +29,37 @@ struct SceneObject {
 struct Scene {
     std::vector<SceneObject> objs;
 
-    void add_object(SceneObject obj);
+    void add_object(SceneObject obj) {
+        this->objs.emplace_back(obj);
+    }
 };
 
-void eye_cancer(Image& img)
+Pixel eye_cancer(int x, int y)
 {
-    for (int i = 0; i < img.height; i++)
-    {
-        for (int j = 0; j < img.width; j++)
-        {
-            img.pixels.emplace_back(Pixel{rand()%128+128, rand()%128+128, rand()%128+128});
-        }
-    }
+    return Pixel(x%256, y%256, 0, 0);
 }
 
 void render_scene(Image& img, const Scene& scene)
 {
-
+    for (int y = 0; y < img.height; y++)
+    {
+        for (int x = 0; x < img.width; x++)
+        {
+            img.pixels.emplace_back(eye_cancer(x, y));
+        }
+    }
 }
 
 int main (int argc, char** argv)
 {
     Image img(atoi(argv[2]), atoi(argv[3]));
-    eye_cancer(img);
+    Scene scene;
+    render_scene(img, scene);
+
     std::string out_name = "";
     out_name.append(argv[1]);
     out_name.append(".ppm");
     img.to_ppm(out_name);
+    
     return 0;
 }

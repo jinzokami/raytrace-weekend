@@ -1,1 +1,1 @@
-g++ -o bin/out.exe src/main.cpp src/vec3.cpp -I ./include -std=c++11
+g++ -o bin/out.exe src/main.cpp src/vec3.cpp src/image.cpp -I ./include -std=c++11

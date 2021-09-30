@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cmath>
 
 struct vec3 {
@@ -36,3 +38,5 @@ inline vec3 operator*(double lhs, const vec3& rhs) {
 inline vec3 operator*(const vec3& lhs, double rhs) {
     return vec3(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
 }
+
+using p3 = vec3;
