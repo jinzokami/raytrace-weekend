@@ -1,5 +1,3 @@
-#pragma once
-
 #include "image.hpp"
 
 Pixel::Pixel(int r, int g, int b, int d) 
@@ -22,13 +20,13 @@ void Image::to_ppm(std::string filename)
 {
     std::string ppm_str;
     char nl[128];
-    sprintf(nl, "%d %d\n\0", this->width, this->height);
+    sprintf(nl, "%d %d\n\0", width, height);
     ppm_str = "P3\n";
     ppm_str.append(nl);
 
-    for (int pixel = 0; pixel < this->pixels.size(); pixel++)
+    for (int pixel = 0; pixel < pixels.size(); pixel++)
     {
-        sprintf(nl, "%d %d %d\n\0", this->pixels[pixel].r, this->pixels[pixel].g, this->pixels[pixel].b);
+        sprintf(nl, "%d %d %d\n\0", pixels[pixel].r, pixels[pixel].g, pixels[pixel].b);
         ppm_str.append(nl);
     }
 

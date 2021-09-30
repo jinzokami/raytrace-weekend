@@ -3,49 +3,37 @@
 #include <string>
 #include <cstring>
 #include <cstdio>
+#include <cmath>
 
 #include "vec3.hpp"
 #include "image.hpp"
-
-//type: can be 0(sphere), 1(box), 2(plane)
-//pos: coords in 3d
-//arg: arg.x is radius(sphere) or width(box), arg.y is height(box), arg.z is depth(box)
-
-struct SceneObject {
-    int type = 0;
-    vec3 pos;
-    vec3 arg;
-
-    SceneObject(int type, double x, double y, double z){
-        this->pos = vec3(x, y, z);
-    };
-
-    SceneObject(int type, double x, double y, double z, double arg1, double arg2, double arg3){
-        this->pos = vec3(x, y, z);
-        this->arg = vec3(arg1, arg2, arg3);
-    };
-};
-
-struct Scene {
-    std::vector<SceneObject> objs;
-
-    void add_object(SceneObject obj) {
-        this->objs.emplace_back(obj);
-    }
-};
-
-Pixel eye_cancer(int x, int y)
-{
-    return Pixel(x%256, y%256, 0, 0);
-}
+#include "scene.hpp"
+#include "ray.hpp"
 
 void render_scene(Image& img, const Scene& scene)
 {
+    double aspect_ratio = img.width/img.height;
+    //the range for x axis is -1 to 1
+    //the range for y axis is -aspect_ratio/2 to aspect_ratio/2
+    double top = aspect_ratio/2;
+    double bottom = aspect_ratio/2;
+    double left = -1;
+    double right = 1;
+
+    double viewplane_distance = 1;
+
     for (int y = 0; y < img.height; y++)
     {
+        double a = y/double(img.height);
+        double screen_y = a*top + (1-a)*bottom;
         for (int x = 0; x < img.width; x++)
         {
-            img.pixels.emplace_back(eye_cancer(x, y));
+            double b = x/double(img.width);
+            double screen_x = b*left + (1-b)*right;
+            vec3 pixel_loc(screen_x, screen_y, viewplane_distance);
+
+            vec3 dir = pixel_loc.normalize();
+            img.pixels.emplace_back(int(abs(dir.x*255.0)), int(abs(dir.y*255.0)), int(abs(dir.z*255.0)), 0);
         }
     }
 }

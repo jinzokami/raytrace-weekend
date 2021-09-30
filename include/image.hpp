@@ -1,15 +1,12 @@
+#pragma once
+
 #include <iostream>
 #include <cstdio>
 #include <vector>
 
 struct Pixel {
     int r, g, b, d;
-    Pixel(int r, int g, int b, int d) {
-        this->r = r;
-        this->g = g;
-        this->b = b;
-        this->d = d;
-    }
+    Pixel(int r, int g, int b, int d);
 };
 
 struct Image {
