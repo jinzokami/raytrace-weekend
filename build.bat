@@ -1,0 +1,1 @@
+g++ -o bin/out.exe src/main.cpp src/vec3.cpp -I ./include -std=c++11
